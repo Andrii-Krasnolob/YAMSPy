@@ -2211,8 +2211,10 @@ class MSPy:
         self.CONFIG['signature'] = []
         self.CONFIG['boardName'] = ""
         self.CONFIG['mcuTypeId'] = ""
-
-        if data:
+        
+        if self.INAV:
+            self.CONFIG['acc_1G'] = self.readbytes(data, size=16, unsigned=True)
+        elif data:
             length = self.readbytes(data, size=8, unsigned=True)
             for i in range(length):
                 self.CONFIG['boardName'] += chr(self.readbytes(data, size=8, unsigned=True))
@@ -2230,7 +2232,7 @@ class MSPy:
             self.CONFIG['configurationProblems'] = self.readbytes(data, size=32, unsigned=True)
             self.CONFIG['spiGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
             self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
-            self.CONFIG['acc1G'] = self.readbytes(data, size=16, unsigned=True)
+            self.CONFIG['acc_1G'] = self.readbytes(data, size=16, unsigned=True)
 
     def process_MSP_NAME(self, data):
         self.CONFIG['name'] = ''
