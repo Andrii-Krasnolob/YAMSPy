@@ -2230,8 +2230,7 @@ class MSPy:
             self.CONFIG['configurationProblems'] = self.readbytes(data, size=32, unsigned=True)
             self.CONFIG['spiGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
             self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
-            self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
-            self.CONFIG['acc_1G'] = self.readbytes(data, size=16, unsigned=True)
+            self.CONFIG['acc1G'] = self.readbytes(data, size=16, unsigned=True)
 
     def process_MSP_NAME(self, data):
         self.CONFIG['name'] = ''

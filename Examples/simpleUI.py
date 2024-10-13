@@ -69,7 +69,7 @@ NO_OF_CYCLES_AVERAGE_GUI_TIME = 10
 # https://pyserial.readthedocs.io/en/latest/shortintro.html
 #
 #
-SERIAL_PORT = "/dev/serial0"
+SERIAL_PORT = "/dev/ttyACM0"
 
 def run_curses(external_function):
     result=1
@@ -161,7 +161,8 @@ def keyboard_controller(screen):
             screen.addstr(16, 50, "boardIdentifier: {}".format(board.CONFIG['boardIdentifier']))
             screen.addstr(17, 0, "boardName: {}".format(board.CONFIG['boardName']))
             screen.addstr(17, 50, "name: {}".format(board.CONFIG['name']))
-
+            screen.addstr(18, 0, "Acc 1G: {}".format(board.CONFIG['acc_1G'] ))
+            screen.clrtoeol()
 
             slow_msgs = cycle(['MSP_ANALOG', 'MSP_STATUS_EX', 'MSP_MOTOR', 'MSP_RC'])
 
@@ -243,6 +244,9 @@ def keyboard_controller(screen):
                 #
                 if (time.time()-last_loop_time) >= CTRL_LOOP_TIME:
                     last_loop_time = time.time()
+                    dataHandler = board.receive_msg()
+                    board.process_recv_data(dataHandler)
+                    # if 'RXLOST' in board.process_armingDisableFlags(board.CONFIG['armingDisableFlags']):
                     # Send the RC channel values to the FC
                     if board.send_RAW_RC([CMDS[ki] for ki in CMDS_ORDER]):
                         dataHandler = board.receive_msg()
@@ -294,6 +298,7 @@ def keyboard_controller(screen):
 
                         screen.addstr(7, 50, "Flight Mode: {}".format(board.process_mode(board.CONFIG['mode'])))
                         screen.clrtoeol()
+                                    
 
 
                     elif next_msg == 'MSP_MOTOR':
@@ -304,8 +309,8 @@ def keyboard_controller(screen):
                         screen.addstr(10, 0, "RC Channels Values: {}".format(board.RC['channels']))
                         screen.clrtoeol()
 
-                    screen.addstr(11, 0, "GUI cycleTime: {0:2.2f}ms (average {1:2.2f}Hz)".format((last_cycleTime)*1000,
-                                                                                                1/(sum(average_cycle)/len(average_cycle))))
+                    # screen.addstr(11, 0, "GUI cycleTime: {0:2.2f}ms (average {1:2.2f}Hz)".format((last_cycleTime)*1000,
+                    #                                                                             1/(sum(average_cycle)/len(average_cycle))))
                     screen.clrtoeol()
 
                     screen.addstr(3, 0, cursor_msg)
