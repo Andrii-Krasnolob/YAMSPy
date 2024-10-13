@@ -159,6 +159,7 @@ class MSPy:
         'MSP_PID':                        112,
         #'MSP_BOX':                        113, // DEPRECATED 
         'MSP_MISC':                       114, # DEPRECATED
+        'MSP_RC_RAW':                     115,
         'MSP_BOXNAMES':                   116,
         'MSP_PIDNAMES':                   117,
         'MSP_WP':                         118, # Not used
@@ -390,6 +391,11 @@ class MSPy:
         # defaults
         # roll, pitch, yaw, throttle, aux 1, ... aux n
         self.RC = {
+            'active_channels':            0,
+            'channels':                   [0]*32,
+        }
+
+        self.RC_RAW = {
             'active_channels':            0,
             'channels':                   [0]*32,
         }
@@ -1584,7 +1590,6 @@ class MSPy:
                 logging.debug('FC reports unsupported message error - Code {}'.format(code))
                 return -6
         
-
     def process_MSP_STATUS(self, data):
         self.CONFIG['cycleTime'] = self.readbytes(data, size=16, unsigned=True)
         self.CONFIG['i2cError'] = self.readbytes(data, size=16, unsigned=True)
@@ -1615,8 +1620,13 @@ class MSPy:
             # Read arming disable flags
             self.CONFIG['armingDisableCount'] = self.readbytes(data, size=8, unsigned=True) # Flag count
             self.CONFIG['armingDisableFlags'] = self.readbytes(data, size=32, unsigned=True)
+            self.CONFIG['rebootRequired'] = self.readbytes(data, size=8, unsigned=True)
         else:
             self.CONFIG['armingDisableFlags'] = self.readbytes(data, size=16, unsigned=True)
+            self.CONFIG['accGetCalibrationAxisFlags'] = self.readbytes(data, size=8, unsigned=True)
+        
+
+
 
     def process_MSP_RAW_IMU(self, data):
         # /512 for mpu6050, /256 for mma
@@ -1649,6 +1659,12 @@ class MSPy:
         n_channels = int(len(data) / 2)
         self.RC['active_channels'] = n_channels
         self.RC['channels'] = [self.readbytes(data, size=16, unsigned=True) for i in range(n_channels)]
+
+    def process_MSP_RC_RAW(self, data):
+        n_channels = int(len(data) / 2)
+        self.RC_RAW['active_channels'] = n_channels
+        self.RC['channels'] = [self.readbytes(data, size=16, unsigned=True) for i in range(n_channels)]
+
 
     def process_MSP_RAW_GPS(self, data):
         self.GPS_DATA['fix'] = self.readbytes(data, size=8, unsigned=True)
@@ -2209,6 +2225,12 @@ class MSPy:
                 self.CONFIG['signature'].append(self.readbytes(data, size=8, unsigned=True))
 
             self.CONFIG['mcuTypeId'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['systemConfigconfigurationState'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['gyroSampleRateHz'] = self.readbytes(data, size=16, unsigned=True)
+            self.CONFIG['configurationProblems'] = self.readbytes(data, size=32, unsigned=True)
+            self.CONFIG['spiGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['acc1G'] = self.readbytes(data, size=16, unsigned=True)
 
     def process_MSP_NAME(self, data):
         self.CONFIG['name'] = ''
