@@ -1621,12 +1621,11 @@ class MSPy:
             self.CONFIG['armingDisableCount'] = self.readbytes(data, size=8, unsigned=True) # Flag count
             self.CONFIG['armingDisableFlags'] = self.readbytes(data, size=32, unsigned=True)
             self.CONFIG['rebootRequired'] = self.readbytes(data, size=8, unsigned=True)
-            self.CONFIG['coreTemperatureCelsius'] = self.readbytes(data, size=16, unsigned=True)
         else:
             self.CONFIG['armingDisableFlags'] = self.readbytes(data, size=16, unsigned=True)
             self.CONFIG['accGetCalibrationAxisFlags'] = self.readbytes(data, size=8, unsigned=True)
         
-        self.CONFIG['acc_1G'] = self.readbytes(data, size=16, unsigned=True)
+
 
 
     def process_MSP_RAW_IMU(self, data):
@@ -2226,6 +2225,13 @@ class MSPy:
                 self.CONFIG['signature'].append(self.readbytes(data, size=8, unsigned=True))
 
             self.CONFIG['mcuTypeId'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['systemConfigconfigurationState'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['gyroSampleRateHz'] = self.readbytes(data, size=16, unsigned=True)
+            self.CONFIG['configurationProblems'] = self.readbytes(data, size=32, unsigned=True)
+            self.CONFIG['spiGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['i2cGetRegisteredDeviceCount'] = self.readbytes(data, size=8, unsigned=True)
+            self.CONFIG['acc_1G'] = self.readbytes(data, size=16, unsigned=True)
 
     def process_MSP_NAME(self, data):
         self.CONFIG['name'] = ''
