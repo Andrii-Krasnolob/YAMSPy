@@ -161,7 +161,7 @@ def keyboard_controller(screen):
             screen.addstr(16, 50, "boardIdentifier: {}".format(board.CONFIG['boardIdentifier']))
             screen.addstr(17, 0, "boardName: {}".format(board.CONFIG['boardName']))
             screen.addstr(17, 50, "name: {}".format(board.CONFIG['name']))
-            screen.addstr(18, 0, "Acc 1G: {}".format(board.CONFIG['acc_1G'] ))
+            screen.addstr(18, 0, "Acc 1G: {}".format(board.CONFIG.get('acc_1G', 0) ))
             screen.clrtoeol()
 
             slow_msgs = cycle(['MSP_ANALOG', 'MSP_STATUS_EX', 'MSP_MOTOR', 'MSP_RC'])
